@@ -54,7 +54,7 @@ type FormContextType = {
 const FormContext = createContext<FormContextType | undefined>(undefined);
 
 // Create the provider component
-export function FormProvider({ children }: { children: ReactNode }) {
+export function FormProvider({ children, userId }: { children: ReactNode; userId: string }) {
   // Default values based on provided data
   const [formData, setFormData] = useState<FormDataType>({
     // Prefilled values
@@ -157,7 +157,10 @@ export function FormProvider({ children }: { children: ReactNode }) {
         smoking_allowed: formData.smokingAllowed,
         alcohol_allowed: formData.alcoholAllowed,
         has_parking_entitlement: formData.hasParkingEntitlement,
-        apartment_in_good_condition: formData.apartmentInGoodCondition
+        apartment_in_good_condition: formData.apartmentInGoodCondition,
+        
+        // Associate the contract with the logged-in user
+        user_id: userId
       };
       
       const { error } = await supabase.from('contracts').insert(dbData);
@@ -219,7 +222,10 @@ export function FormProvider({ children }: { children: ReactNode }) {
         smoking_allowed: formData.smokingAllowed,
         alcohol_allowed: formData.alcoholAllowed,
         has_parking_entitlement: formData.hasParkingEntitlement,
-        apartment_in_good_condition: formData.apartmentInGoodCondition
+        apartment_in_good_condition: formData.apartmentInGoodCondition,
+        
+        // Associate the contract with the logged-in user
+        user_id: userId
       };
       
       console.log('Saving form data:', JSON.stringify(dbData).substring(0, 100) + '...');

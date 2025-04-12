@@ -31,6 +31,22 @@ export async function POST(request: NextRequest) {
     const supabase = await createClient();
     console.log('Supabase client created successfully');
     
+    // Get the current user
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    
+    if (userError || !user) {
+      console.error('User authentication error:', userError);
+      return NextResponse.json({ 
+        error: 'User not authenticated',
+        details: userError?.message
+      }, { status: 401 });
+    }
+    
+    // If user_id was not included in the data, add it from the authenticated user
+    if (!data.user_id) {
+      data.user_id = user.id;
+    }
+    
     // Log the key data we're inserting (without sensitive info)
     console.log('Inserting data into contracts table with keys:', Object.keys(data));
     

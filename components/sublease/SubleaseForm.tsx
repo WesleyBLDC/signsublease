@@ -5,10 +5,12 @@ import { toast } from 'react-hot-toast';
 import { useFormContext } from './FormContext';
 import { FormSection } from './FormSection';
 import { formSections } from '@/utils/formSections';
+import { useRouter } from 'next/navigation';
 
 export default function SubleaseForm() {
   const { formData, handleInputChange, setRadioValue, saveFormData, isSaving } = useFormContext();
   const [debug, setDebug] = useState(false);
+  const router = useRouter();
   const [debugOutput, setDebugOutput] = useState<any>(null);
 
   // Debug function to check environment variables
@@ -28,9 +30,14 @@ export default function SubleaseForm() {
     const result = await saveFormData();
     
     if (result.success) {
-      toast.success(result.message);
+      // Redirect to contracts page on successful save
+      router.push('/contracts');
     } else {
-      toast.error(result.message);
+      // Display error
+      toast.error(result.message, {
+        position: "top-right",
+        duration: 5000,
+      });
     }
   };
 
@@ -96,7 +103,7 @@ export default function SubleaseForm() {
                   Saving...
                 </>
               ) : (
-                'Save Draft'
+                'Save & Return to Contracts'
               )}
             </button>
             
@@ -112,6 +119,19 @@ export default function SubleaseForm() {
           
           <button 
             type="button"
+            onClick={async () => {
+              // First save the form data
+              const result = await saveFormData();
+              if (result.success) {
+                // Then navigate to the contracts page
+                router.push('/contracts');
+              } else {
+                toast.error(result.message, {
+                  position: "top-right",
+                  duration: 5000,
+                });
+              }
+            }}
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
           >
             Generate Contract
