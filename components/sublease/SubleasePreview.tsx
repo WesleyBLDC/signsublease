@@ -17,29 +17,6 @@ export default function SubleasePreview() {
 
   return (
     <>
-      {/* Header with controls */}
-      <div className="bg-white border-b border-gray-200 p-3 flex justify-between items-center">
-        <div className="text-lg font-medium">Sublease Contract Preview</div>
-        <div className="flex gap-3">
-          <button className="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-50 flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="7 10 12 15 17 10"></polyline>
-              <line x1="12" y1="15" x2="12" y2="3"></line>
-            </svg>
-            Download
-          </button>
-          <button className="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-50 flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M17 17H8a2 2 0 1 0 0 4h9a3 3 0 0 0 0-6h-1a3 3 0 1 0-4-4"></path>
-              <polyline points="16 7 21 7 21 12"></polyline>
-              <line x1="5" y1="9" x2="19" y2="9"></line>
-            </svg>
-            Share
-          </button>
-        </div>
-      </div>
-
       {/* PDF Viewer (mockup) with dynamic height */}
       <div className="flex-1 overflow-auto p-6 flex justify-center">
         <div className="bg-white shadow-md w-full max-w-[800px] p-8 rounded-sm h-auto flex flex-col">

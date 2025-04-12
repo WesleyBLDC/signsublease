@@ -68,10 +68,6 @@ export default function SubleaseForm() {
 
   return (
     <form onSubmit={handleSubmit} className="p-6">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold mb-2">Sublease Contract Builder</h1>
-        <p className="text-gray-600 text-sm">Fill in the information step by step</p>
-      </div>
 
       {/* Render form sections dynamically */}
       <div className="space-y-8">
