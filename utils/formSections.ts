@@ -26,7 +26,7 @@ interface FormSection {
 export const formSections: FormSection[] = [
   {
     id: 'sublessor',
-    title: '1. Sublessor Information',
+    title: 'Sublessor Information',
     fields: [
       { 
         name: 'sublessor_name', 
@@ -39,7 +39,7 @@ export const formSections: FormSection[] = [
   },
   {
     id: 'sublessee',
-    title: '2. Sublessee Information',
+    title: 'Sublessee Information',
     fields: [
       { 
         name: 'sublessee_name', 
@@ -52,7 +52,7 @@ export const formSections: FormSection[] = [
   },
   {
     id: 'property',
-    title: '3. Property Details',
+    title: 'Property Details',
     fields: [
       { 
         name: 'apartment_address', 
@@ -77,7 +77,7 @@ export const formSections: FormSection[] = [
   },
   {
     id: 'lease',
-    title: '4. Lease Terms',
+    title: 'Lease Terms',
     fields: [
       { 
         name: 'lease_term_duration', 
@@ -116,7 +116,7 @@ export const formSections: FormSection[] = [
   },
   {
     id: 'interest',
-    title: '5. Sublessee\'s Interest in the Apartment',
+    title: 'Sublessee\'s Interest in the Apartment',
     fields: [
       { 
         name: 'willShareBedroom', 
@@ -142,7 +142,7 @@ export const formSections: FormSection[] = [
   },
   {
     id: 'houseRules',
-    title: '6. House Rules',
+    title: 'House Rules',
     fields: [
       { 
         name: 'requiresOvernightGuestPermission', 
@@ -183,7 +183,7 @@ export const formSections: FormSection[] = [
   },
   {
     id: 'utilities',
-    title: '7. Utilities & Charges',
+    title: 'Utilities & Charges',
     fields: [
       { 
         name: 'utility_charge_percentage', 
@@ -201,7 +201,7 @@ export const formSections: FormSection[] = [
   },
   {
     id: 'parking',
-    title: '8. Parking',
+    title: 'Parking',
     fields: [
       { 
         name: 'hasParkingEntitlement', 
@@ -222,7 +222,7 @@ export const formSections: FormSection[] = [
   },
   {
     id: 'condition',
-    title: '9. Apartment Condition',
+    title: 'Apartment Condition',
     fields: [
       { 
         name: 'apartmentInGoodCondition', 
@@ -243,7 +243,7 @@ export const formSections: FormSection[] = [
   },
   {
     id: 'signature',
-    title: '10. Signatures',
+    title: 'Signatures',
     fields: [
       { 
         name: 'sublessor_signature_date', 
