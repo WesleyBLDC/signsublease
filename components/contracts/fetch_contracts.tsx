@@ -143,7 +143,7 @@ export default function FetchContracts() {
                 <Link href={`/contracts/${contract.id}`}>View Details</Link>
               </Button>
               <Button variant="outline" asChild>
-                <Link href={`/contracts/${contract.id}/edit`}>Edit</Link>
+                <Link href={`/create?id=${contract.id}`}>Edit</Link>
               </Button>
             </div>
           </div>

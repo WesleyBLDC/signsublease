@@ -54,42 +54,92 @@ type FormContextType = {
 const FormContext = createContext<FormContextType | undefined>(undefined);
 
 // Create the provider component
-export function FormProvider({ children, userId }: { children: ReactNode; userId: string }) {
-  // Default values based on provided data
-  const [formData, setFormData] = useState<FormDataType>({
-    // Prefilled values
-    sublessor_name: "",
-    apartment_address: "",
-    monthly_rent: 0,
-    security_deposit: 0,
-    number_of_tenants: 0,
-    household_chores_description: "",
-    quiet_hours: "",
-    landlord_name: "",
-    utility_charge_percentage: 0,
-    telephone_charge_percentage: 0,
+export function FormProvider({ 
+  children, 
+  userId, 
+  initialData 
+}: { 
+  children: ReactNode; 
+  userId: string;
+  initialData?: any;
+}) {
+  // Default values based on provided data or initial data from edit mode
+  const [formData, setFormData] = useState<FormDataType>(() => {
+    // If we have initialData, map the database fields to form fields
+    if (initialData) {
+      return {
+        // Prefilled values
+        sublessor_name: initialData.sublessor_name || "",
+        apartment_address: initialData.apartment_address || "",
+        monthly_rent: initialData.monthly_rent || 0,
+        security_deposit: initialData.security_deposit || 0,
+        number_of_tenants: initialData.number_of_tenants || 0,
+        household_chores_description: initialData.household_chores_description || "",
+        quiet_hours: initialData.quiet_hours || "",
+        landlord_name: initialData.landlord_name || "",
+        utility_charge_percentage: initialData.utility_charge_percentage || 0,
+        telephone_charge_percentage: initialData.telephone_charge_percentage || 0,
+        
+        // Values to be filled
+        sublessee_name: initialData.sublessee_name || "",
+        lease_term_duration: initialData.lease_term_duration || "",
+        lease_start_date: initialData.lease_start_date || "",
+        lease_end_date: initialData.lease_end_date || "",
+        termination_notice_date: initialData.termination_notice_date || "",
+        bedroom_sharing_roommate: initialData.bedroom_sharing_roommate || "",
+        parking_space_location: initialData.parking_space_location || "",
+        apartment_condition_exception: initialData.apartment_condition_exception || "",
+        sublessor_signature_date: initialData.sublessor_signature_date || "",
+        sublessee_signature_date: initialData.sublessee_signature_date || "",
+        additional_tenancy_extension_info: initialData.additional_tenancy_extension_info || "",
+        
+        // Boolean values
+        willShareBedroom: initialData.will_share_bedroom || false,
+        willShareCommonAreas: initialData.will_share_common_areas || false,
+        requiresOvernightGuestPermission: initialData.requires_overnight_guest_permission || false,
+        smokingAllowed: initialData.smoking_allowed || false,
+        alcoholAllowed: initialData.alcohol_allowed || false,
+        hasParkingEntitlement: initialData.has_parking_entitlement || false,
+        apartmentInGoodCondition: initialData.apartment_in_good_condition || false
+      };
+    }
     
-    // Values to be filled
-    sublessee_name: "",
-    lease_term_duration: "",
-    lease_start_date: "",
-    lease_end_date: "",
-    termination_notice_date: "",
-    bedroom_sharing_roommate: "",
-    parking_space_location: "",
-    apartment_condition_exception: "",
-    sublessor_signature_date: "",
-    sublessee_signature_date: "",
-    additional_tenancy_extension_info: "",
-    
-    // Boolean values
-    willShareBedroom: false,
-    willShareCommonAreas: false,
-    requiresOvernightGuestPermission: false,
-    smokingAllowed: false,
-    alcoholAllowed: false,
-    hasParkingEntitlement: false,
-    apartmentInGoodCondition: false
+    // Default empty values
+    return {
+      // Prefilled values
+      sublessor_name: "",
+      apartment_address: "",
+      monthly_rent: 0,
+      security_deposit: 0,
+      number_of_tenants: 0,
+      household_chores_description: "",
+      quiet_hours: "",
+      landlord_name: "",
+      utility_charge_percentage: 0,
+      telephone_charge_percentage: 0,
+      
+      // Values to be filled
+      sublessee_name: "",
+      lease_term_duration: "",
+      lease_start_date: "",
+      lease_end_date: "",
+      termination_notice_date: "",
+      bedroom_sharing_roommate: "",
+      parking_space_location: "",
+      apartment_condition_exception: "",
+      sublessor_signature_date: "",
+      sublessee_signature_date: "",
+      additional_tenancy_extension_info: "",
+      
+      // Boolean values
+      willShareBedroom: false,
+      willShareCommonAreas: false,
+      requiresOvernightGuestPermission: false,
+      smokingAllowed: false,
+      alcoholAllowed: false,
+      hasParkingEntitlement: false,
+      apartmentInGoodCondition: false
+    };
   });
 
   const [isSaving, setIsSaving] = useState(false);
@@ -163,11 +213,25 @@ export function FormProvider({ children, userId }: { children: ReactNode; userId
         user_id: userId
       };
       
-      const { error } = await supabase.from('contracts').insert(dbData);
-      
-      if (error) throw error;
-      
-      return { success: true, message: 'Data saved successfully' };
+      // If we have initialData, update existing contract
+      if (initialData?.id) {
+        const { error } = await supabase
+          .from('contracts')
+          .update(dbData)
+          .eq('id', initialData.id)
+          .eq('user_id', userId); // Ensure we only update user's own contracts
+        
+        if (error) throw error;
+        
+        return { success: true, message: 'Contract updated successfully' };
+      } else {
+        // Otherwise insert new contract
+        const { error } = await supabase.from('contracts').insert(dbData);
+        
+        if (error) throw error;
+        
+        return { success: true, message: 'Contract created successfully' };
+      }
     } catch (error) {
       console.error('Error saving to Supabase:', error);
       return { 
@@ -230,14 +294,39 @@ export function FormProvider({ children, userId }: { children: ReactNode; userId
       
       console.log('Saving form data:', JSON.stringify(dbData).substring(0, 100) + '...');
       
+      // If editing an existing contract, include contract ID
+      const contractId = initialData?.id;
+      const isUpdate = !!contractId;
+      
       // Try client-side first for faster response
       try {
         const supabase = createClient();
-        const { error: clientError } = await supabase.from('contracts').insert(dbData);
+        
+        let clientError;
+        
+        if (isUpdate) {
+          // Update existing contract
+          const { error } = await supabase
+            .from('contracts')
+            .update(dbData)
+            .eq('id', contractId)
+            .eq('user_id', userId); // Ensure we only update user's own contracts
+          
+          clientError = error;
+        } else {
+          // Insert new contract
+          const { error } = await supabase.from('contracts').insert(dbData);
+          clientError = error;
+        }
         
         if (!clientError) {
           setIsSaving(false);
-          return { success: true, message: 'Draft saved successfully via client' };
+          return { 
+            success: true, 
+            message: isUpdate 
+              ? 'Contract updated successfully via client' 
+              : 'Contract created successfully via client' 
+          };
         }
         
         // If client-side fails, fall back to API route
@@ -248,7 +337,11 @@ export function FormProvider({ children, userId }: { children: ReactNode; userId
       }
       
       // Make API call to save the data
-      const response = await fetch('/api/form/save_form', {
+      const endpoint = isUpdate 
+        ? `/api/form/update_form?id=${contractId}` 
+        : '/api/form/save_form';
+        
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -3,20 +3,24 @@
 import SubleaseForm from '@/components/sublease/SubleaseForm';
 import SubleasePreview from '@/components/sublease/SubleasePreview';
 import { FormProvider } from '@/components/sublease/FormContext';
+import Link from 'next/link';
 
 interface CreateContractFormProps {
   userId: string;
+  contract?: any; // Contract data for edit mode
 }
 
-export default function CreateContractForm({ userId }: CreateContractFormProps) {
+export default function CreateContractForm({ userId, contract }: CreateContractFormProps) {
+  const isEditMode = !!contract;
+  
   return (
-    <FormProvider userId={userId}>
+    <FormProvider userId={userId} initialData={contract}>
       <div className="flex flex-col h-screen">
         <div className="w-full bg-gray-800 text-white p-4 flex justify-between items-center">
-          <div className="text-lg">Create New Contract</div>
-          <a href="/contracts" className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded">
+          <div className="text-lg">{isEditMode ? 'Edit Contract' : 'Create New Contract'}</div>
+          <Link href="/contracts" className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded">
             View My Contracts
-          </a>
+          </Link>
         </div>
         <div className="flex flex-row h-full">
           {/* Left sidebar with form (30% width) */}
